@@ -80,4 +80,10 @@
 			<version>2.5.6</version>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository> 
+    		<id>maven-repository</id> 
+    		<url>https://raw.github.com/liubingsmile/jdorm/maven-repository/master</url> 
+  		</repository> 
+	</repositories>
 </project>
