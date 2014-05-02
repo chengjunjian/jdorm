@@ -1,4 +1,4 @@
 jdorm
 =====
 
-jdorm-1.0 发布，高性能的 hibernate 精简版本
+jdorm-1.0 发布，高性能的 hibernate 精简版本。qq群：287266712
