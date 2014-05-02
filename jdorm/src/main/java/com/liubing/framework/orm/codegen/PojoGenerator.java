@@ -40,13 +40,16 @@ public class PojoGenerator {
 	private String password= "client";
 	private String prefix;
 	private boolean genJsonAnnotations = false;
-
-	public PojoGenerator(String driver, String url, String username, String password, String packageName) {
+	private String readDatasource;
+	private String writeDatasource;
+	public PojoGenerator(String driver, String url, String username, String password, String packageName,String readDatasource,String writeDatasource) {
 		this.driver =  driver;
 		this.url =  url;
 		this.username =  username;
 		this.password =  password;
 		this.packageName =  packageName;
+		this.readDatasource=readDatasource;
+		this.writeDatasource=writeDatasource;
 		this.destination = new File(this.destfile);
 	}
 
@@ -57,9 +60,37 @@ public class PojoGenerator {
 		this.password =  password;
 		this.packageName =  packageName;
 		this.destfile =  destination;
+		//this.readDatasource=readDatasource;
+		//this.writeDatasource=writeDatasource;
 		this.destination = new File(this.destfile);
 	}
-	
+	public PojoGenerator(String driver, String url, String username, String password, String packageName, String destination,String readDatasource,String writeDatasource ) {
+		this.driver =  driver;
+		this.url =  url;
+		this.username =  username;
+		this.password =  password;
+		this.packageName =  packageName;
+		this.destfile =  destination;
+		this.readDatasource=readDatasource;
+		this.writeDatasource=writeDatasource;
+		this.destination = new File(this.destfile);
+	}
+	public String getReadDatasource() {
+		return readDatasource;
+	}
+
+	public void setReadDatasource(String readDatasource) {
+		this.readDatasource = readDatasource;
+	}
+
+	public String getWriteDatasource() {
+		return writeDatasource;
+	}
+
+	public void setWriteDatasource(String writeDatasource) {
+		this.writeDatasource = writeDatasource;
+	}
+
 	/**
 	 * get database type
 	 * @return
@@ -189,7 +220,7 @@ public class PojoGenerator {
 					remark = tablename;
 				}
 				className = GenUtil.capitalize(className, GenUtil.PASCAL_CASE);
-				String javaCode = generateJavaCode1(tablename, remark, className, members, null,"test","test");
+				String javaCode = generateJavaCode1(tablename, remark, className, members, null,writeDatasource,readDatasource);
 				File javaFile = new File(folder, className + "Entity.java");
 				save(javaFile, javaCode);
 			}
@@ -677,15 +708,15 @@ public class PojoGenerator {
 	private void addimports(TabStack code, Set<Member> members) {
 		Set<String> imports = new TreeSet<String>();
 		imports.add("import java.io.Serializable;" + GenUtil.LINE_END);
-		imports.add("import com.jd.framework.orm.entity.BaseEntity;" + GenUtil.LINE_END);
+		imports.add("import com.liubing.framework.orm.entity.BaseEntity;" + GenUtil.LINE_END);
 		
 		imports.add("import java.util.ArrayList;" + GenUtil.LINE_END);
 		imports.add("import java.util.List;" + GenUtil.LINE_END);
-		imports.add("import com.jd.framework.orm.schema.SchemaColumn;" + GenUtil.LINE_END);
-		imports.add("import com.jd.framework.orm.schema.SchemaInfo;" + GenUtil.LINE_END);
+		imports.add("import com.liubing.framework.orm.schema.SchemaColumn;" + GenUtil.LINE_END);
+		imports.add("import com.liubing.framework.orm.schema.SchemaInfo;" + GenUtil.LINE_END);
 		
-		imports.add("import com.jd.framework.orm.annotation.Table;" + GenUtil.LINE_END);
-		imports.add("import com.jd.framework.orm.annotation.Column;" + GenUtil.LINE_END);
+		imports.add("import com.liubing.framework.orm.annotation.Table;" + GenUtil.LINE_END);
+		imports.add("import com.liubing.framework.orm.annotation.Column;" + GenUtil.LINE_END);
 		for (Member member : members) {
 			imports.add(member.getImport());
 		}
@@ -864,7 +895,7 @@ public class PojoGenerator {
 			code.appendEOL();
 			code.append("schemaColumn.setColumnName(\""+member.getName()+"\");");
 			code.appendEOL();
-			code.append("schemaColumn.setFieldClass("+member.getType().getName()+".class);");
+			code.append("schemaColumn.setFieldClass("+member.getType().getSimpleName()+".class);");
 			code.appendEOL();
 			code.append("schemaColumn.setFieldName(\""+member.getName()+"\");");
 			code.appendEOL();
@@ -1259,7 +1290,7 @@ public class PojoGenerator {
 		String username = "root";
 		String password = "client";
 		String packageName = "test.jd.framework.orm.entity";
-		PojoGenerator generator = new PojoGenerator(driver, url, username, password, packageName);
+		PojoGenerator generator = new PojoGenerator(driver, url, username, password, packageName,"dataSource","dataSource");
 		generator.setPrefix("UUM_");
 		generator.createDatabaseEntities();
 		//generator.createDatabaseEntities("demo", null,"test","test");
